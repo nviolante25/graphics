@@ -1,6 +1,6 @@
 # Homework 1: Transformations
 
-- Implement [Angle-axis formula](./Transform.cpp#L9) for a rotation of angle $\theta$ around the axis $v$
+- Implement [angle-axis formula](./Transform.cpp#L9) for a rotation of angle $\theta$ around the axis $v$.
 
 $$R(\theta, v) = \cos(\theta)\begin{pmatrix} 1 & 0 & 0 \\
                                              0 & 1 & 0 \\ 
