@@ -19,7 +19,7 @@ $$
 - Implement [lookAt](./Transform.cpp#L42) to transform 3D world coordiantes to 3D camera coordinates, with the camera placed in `eye` looking at $(0, 0, 0)$ with its head pointing in the `up` direction.
 
     1. Create an orthonormal camera coordinate system starting from the directions `eye` and `up` using the cross product trick: $w=\frac{eye}{||eye||}$, $u=\frac{up\times w}{||up\times w||}$, $v=w\times u$
-    2. Given a point $X$ in world coordinates we first translate it by $-eye$ and then apply the world-to-camera rotation given by the basis $(u, v, w)$.s  
+    2. Given a point $X$ in world coordinates we first translate it by $-eye$ and then apply the world-to-camera rotation given by the basis $(u, v, w)$.
     3. Combine the translation and the rotation to construct the $4\times 4$ transformation matrix
         $$\begin{pmatrix} u_0 & u_1 & u_2 & -u\cdot eye \\
                           v_0 & v_1 & v_2 & -v\cdot eye \\
@@ -29,5 +29,5 @@ $$
         $$
 
 
-### Chages in original files
+### Changes in original files
 - Add `#include <unistd.h>` in [grader.pp](./UCB/grader.cpp#L8) to prevent errors from `usleep`.
