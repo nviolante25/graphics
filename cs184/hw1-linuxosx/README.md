@@ -16,8 +16,8 @@ $$R(\theta, v) = \cos(\theta)\begin{pmatrix} 1 & 0 & 0 \\
                                 \end{pmatrix}
 $$
 
-- Implement [lookAt](./Transform.cpp#L42) for a camera looking at $(0, 0, 0)$ with `eye` and `up`. This is a two-step procedure.
-    1. Create a new coordinate frame: $w=\frac{eye}{||eye||}$, $u=\frac{up\times w}{||up\times w||}$, $v=w\times u$
+- Implement [lookAt](./Transform.cpp#L42) to transform 3D world coordiantes to 3D camera coordinates, with the camera placed in `eye` looking at $(0, 0, 0)$ with its head pointing in the `up` direction. This is a two-step procedure.
+    1. Create an orthonormal camera coordinate system from `eye` and `up` using the cross product trick: $w=\frac{eye}{||eye||}$, $u=\frac{up\times w}{||up\times w||}$, $v=w\times u$
     2. Construct the transformation matrix
         $$\begin{pmatrix} u_0 & u_1 & u_2 & -u\cdot eye \\
                           v_0 & v_1 & v_2 & -u\cdot eye \\
