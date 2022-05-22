@@ -2,9 +2,8 @@
 
 - Implement [Angle-axis formula](./Transform.cpp#L9) for a rotation of angle $\theta$ around the axis $v$
 
-$$R(\theta, v) = \cos(\theta)\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} 
-   + (1 - \cos(\theta))\begin{pmatrix} x^2 & xy & xz \\ xy & y^2 & yz \\ xz & yz & z^2 \end{pmatrix}
-   + \sin(\theta)\begin{pmatrix} 0 & -z & y \\ z & 0 & -x \\ -y & x & 0 \end{pmatrix}$$
+$$R(\theta, v) = \cos(\theta)\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} + (1 - \cos(\theta))\begin{pmatrix} x^2 & xy & xz \\ xy & y^2 & yz \\ xz & yz & z^2 \end{pmatrix} + \sin(\theta)\begin{pmatrix} 0 & -z & y \\ z & 0 & -x \\ -y & x & 0 \end{pmatrix}$$
+
 - Implement [lookAt](./Transform.cpp#L42) for a camera looking at $(0, 0, 0)$ with `eye` and `up`. This is a two-step procedure.
     1. Create a new coordinate frame: $w=\frac{eye}{||eye||}$, $u=\frac{up\times w}{||up\times w||}$, $v=w\times u$
     2. Construct the transformation matrix
