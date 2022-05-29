@@ -7,6 +7,18 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 } 
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+        glClearColor(1, 0, 0, 1);
+    }
+    if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+        glClearColor(0, 0, 0, 1);
+    }
+}
+
 
 int main() {
 
@@ -30,6 +42,7 @@ int main() {
     }    
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     // -----------------------------------------------------------------------
     // Create Vertex and Fragments Shaders and link them to a Program
@@ -125,7 +138,7 @@ int main() {
     // -----------------------------------------------------------------------
     while (!glfwWindowShouldClose(window)) {
 
-        glClearColor(0, 0, 0, 1);
+        // glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
