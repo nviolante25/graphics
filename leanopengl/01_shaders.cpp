@@ -10,13 +10,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 
 int main() {
 
-    // glfw: initialization
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // glfw: create window
     auto window=glfwCreateWindow(400, 600, "Tutorial", NULL, NULL);
     if (!window) {
         std::cout << "Error: failed to create window\n";
@@ -26,13 +24,11 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetWindowPos(window, 700, 200);
 
-    // glad: initialization
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }    
 
-    // glfw: set callbacks
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // -----------------------------------------------------------------------
@@ -124,12 +120,12 @@ int main() {
     glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // Vertex attribute configuration
     glEnableVertexAttribArray(location);
 
-
     // -----------------------------------------------------------------------
-    
-    // glfw: render lopp
+    // Render loop 
+    // -----------------------------------------------------------------------
     while (!glfwWindowShouldClose(window)) {
 
+        glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
