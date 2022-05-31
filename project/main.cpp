@@ -11,6 +11,10 @@ auto eye = glm::vec3(0, 0, 5);
 auto center = glm::vec3(0, 0, 0);
 auto up = glm::vec3(0, 1, 0);
 
+auto eye_init = eye;
+auto center_init = center;
+auto up_init = up;
+
 auto model = glm::mat4(1.0f);
 auto view = glm::mat4(1.0f);
 auto projection = glm::mat4(1.0f);
@@ -49,14 +53,12 @@ int main() {
         return -1;
     } 
     // --------------------------------------------------------------------
+    // Load data in GPU buffer
+    // --------------------------------------------------------------------
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
         0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,
-        
-        // 0.5f, 0.0f, 0.0f,
-        // 1.0f, 0.0f, 0.0f,
-        // 0.75f,  0.5f, 0.0f,
     }; 
 
     unsigned int VBO, VAO;
@@ -67,20 +69,19 @@ int main() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
     glGenVertexArrays(1, &VAO);
 
-
-    // Specify vertex attributes
+    // Specify vertex attributes (size, type, stride, offsets)
     glBindVertexArray(VAO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-
+    // --------------------------------------------------------------------
+    // Load and compile shaders
+    // --------------------------------------------------------------------
     Shader shader("./shader/vertex.glsl", "./shader/fragment.glsl");
     
-
-    // model = glm::translate(model, glm::vec3(0,0, 0));
-    // model = glm::rotate(model, -55.0f, glm::vec3(1, 0, 0));
+    model = glm::rotate(model, -55.0f, glm::vec3(1, 0, 0));
     projection = glm::perspective(45.0f, 700.0f / 500.0f, 0.1f, 100.0f);
 
     // --------------------------------------------------------------------
@@ -112,6 +113,7 @@ int main() {
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 } 
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -135,8 +137,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_DOWN && action != GLFW_RELEASE) {
         upRotation(-5.0f);
     }
+    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        eye = eye_init;
+        center = center_init;
+        up = up_init;
+    }
 }
-
 
 void leftRotation(float angle) {
     auto rotation = glm::mat4(1.0f);
