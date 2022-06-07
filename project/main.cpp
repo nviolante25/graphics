@@ -1,4 +1,4 @@
-#include "glad/glad.h"
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -158,16 +158,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         eye = eye - speed * glm::normalize(center - eye);
     }
     if (key == GLFW_KEY_LEFT && action != GLFW_RELEASE) {
-        leftRotation(5.0f);
+        leftRotation(glm::radians(5.0f));
     }
     if (key == GLFW_KEY_RIGHT && action != GLFW_RELEASE) {
-        leftRotation(-5.0f);
+        leftRotation(glm::radians(-5.0f));
     }
     if (key == GLFW_KEY_UP && action != GLFW_RELEASE) {
-        upRotation(5.0f);
+        upRotation(glm::radians(5.0f));
     }
     if (key == GLFW_KEY_DOWN && action != GLFW_RELEASE) {
-        upRotation(-5.0f);
+        upRotation(glm::radians(-5.0f));
     }
     if (key == GLFW_KEY_R && action == GLFW_PRESS) {
         eye = eye_init;
