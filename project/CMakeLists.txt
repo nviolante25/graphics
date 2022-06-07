@@ -15,5 +15,6 @@ message(STATUS "Output directory: ${EXECUTABLE_OUTPUT_PATH}")
 message(STATUS "Include directory: ${INCLUDE_PATH}")
 
 
-include_directories(${INCLUDE_PATH}/glm-0.9.2.7)
-add_executable(main ${PROJECT_SOURCE_DIR}/main.cpp ${INCLUDE_PATH}/glad/glad.c)
+add_subdirectory(${INCLUDE_PATH})
+add_executable(main ${PROJECT_SOURCE_DIR}/main.cpp)
+target_link_libraries(main PUBLIC glad glm)
