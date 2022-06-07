@@ -56,31 +56,48 @@ int main() {
     // Load data in GPU buffer
     // --------------------------------------------------------------------
     float vertices[] = {
-        0, 0, 0,         1.0f, 0.5f, 0.5f,    
-        0, 1, 0,         0.5f, 1.0f, 0.5f,
-        1, 0, 0,         0.5f, 0.5f, 1.0f,
-        1, 1, 0,         0.5f, 0.5f, 0.5f,
-        0.5, 0.5, 1,     1.0f, 0.5f, 0.5f,
-    }; 
-    unsigned int indices[] = {
-        0, 1, 2,
-        1, 2, 3,
-        0, 1, 4,
-        0, 2, 4,
-        3, 1, 4,
-        3, 2, 4,
-    };
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
 
-    float mag = 1 / sqrt(2);
-    float normals[] = {
-        0, 0, -1,
-        0, 0, -1,
-        -mag, 0, mag,
-        0, -mag, mag,
-        mag, 0, mag,
-        0, mag, mag,    
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
-    
     glm::vec3 positions[] = {
         glm::vec3{-2.5 ,0, 0},
         glm::vec3{-0.5, 0, 0},
@@ -108,17 +125,6 @@ int main() {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // Load indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
-
-    // Load normals
-    glBindBuffer(GL_ARRAY_BUFFER, VBNormals);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals, GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(2);
-
-
     // --------------------------------------------------------------------
     // Load and compile shaders
     // --------------------------------------------------------------------
@@ -131,28 +137,34 @@ int main() {
     // --------------------------------------------------------------------
     glEnable(GL_DEPTH_TEST);
     auto lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    auto lightPos = glm::vec3(0, 0, 2.0f);
     
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.3, 0.3, 0.3, 1.0);
+        glClearColor(0.8, 0.8, 0.9, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        lightPos.x = 1.5f * glm::cos(glfwGetTime());
+        lightPos.y = 1.5f * glm::sin(glfwGetTime());
         // ---------------------------------------------------------------
         shader.use();
         view = glm::lookAt(eye, center, up);
-        auto lightPos = glm::vec3(0.0f ,0.0f, 10.0f);
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniform3fv(glGetUniformLocation(shader.ID, "lightColor"), 1, glm::value_ptr(lightColor));
         glUniform3fv(glGetUniformLocation(shader.ID, "lightPos"), 1, glm::value_ptr(lightPos));
+        glUniform3fv(glGetUniformLocation(shader.ID, "cameraPos"), 1, glm::value_ptr(eye));
 
         glBindVertexArray(VAO);
         for (int i=0; i < 3; i++) {
             model = glm::mat4(1.0f);
             model = glm::scale(model, sizes[i]);
-            model = glm::translate(model, positions[i]);
+            model = glm::translate(model, positions[i]); 
+            glm::mat3 normal_matrix;
+            normal_matrix = glm::transpose(glm::inverse(glm::mat3(model)));
 
             glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
-            glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0); 
+            glUniformMatrix3fv(glGetUniformLocation(shader.ID, "normal_matrix"), 1, GL_FALSE, glm::value_ptr(normal_matrix));
+            glDrawArrays(GL_TRIANGLES, 0, 36); 
         }
         // ---------------------------------------------------------------
 
