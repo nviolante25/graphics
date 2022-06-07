@@ -3,7 +3,9 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/project/include/glm-0.9.2.7", "/usr/include"
+                "/usr/include",
+                "${workspaceFolder}/project/include/glm",
+                "${workspaceFolder}/project/include/glad/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
