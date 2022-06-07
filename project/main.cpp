@@ -56,11 +56,11 @@ int main() {
     // Load data in GPU buffer
     // --------------------------------------------------------------------
     float vertices[] = {
-        0, 0, 0,         0.5f, 0.5f, 0.0f,
-        0, 1, 0,         0.5f, 0.5f, 0.0f,
-        1, 0, 0,         0.5f, 0.5f, 0.0f,
-        1, 1, 0,         0.5f, 0.5f, 0.0f,
-        0.5, 0.5, 1,     0.5f, 0.5f, 0.0f,
+        0, 0, 0,         1.0f, 0.5f, 0.5f,    
+        0, 1, 0,         0.5f, 1.0f, 0.5f,
+        1, 0, 0,         0.5f, 0.5f, 1.0f,
+        1, 1, 0,         0.5f, 0.5f, 0.5f,
+        0.5, 0.5, 1,     1.0f, 0.5f, 0.5f,
     }; 
     unsigned int indices[] = {
         0, 1, 2,
@@ -70,6 +70,17 @@ int main() {
         3, 1, 4,
         3, 2, 4,
     };
+
+    float mag = 1 / sqrt(2);
+    float normals[] = {
+        0, 0, -1,
+        0, 0, -1,
+        -mag, 0, mag,
+        0, -mag, mag,
+        mag, 0, mag,
+        0, mag, mag,    
+    };
+    
     glm::vec3 positions[] = {
         glm::vec3{-2.5 ,0, 0},
         glm::vec3{-0.5, 0, 0},
@@ -81,25 +92,32 @@ int main() {
         glm::vec3{2, 2, 2}
     };
 
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO, EBO, VBNormals;
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+    glGenBuffers(1, &VBNormals);
     glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
 
+    glBindVertexArray(VAO);
     // Load vertex data on GPU
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-
-    // Load indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
-
     // Specify vertex attributes (size, type, stride, offsets)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // Load indices
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
+
+    // Load normals
+    glBindBuffer(GL_ARRAY_BUFFER, VBNormals);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(2);
+
 
     // --------------------------------------------------------------------
     // Load and compile shaders
@@ -112,6 +130,8 @@ int main() {
     // Render loop
     // --------------------------------------------------------------------
     glEnable(GL_DEPTH_TEST);
+    auto lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.3, 0.3, 0.3, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -119,8 +139,11 @@ int main() {
         // ---------------------------------------------------------------
         shader.use();
         view = glm::lookAt(eye, center, up);
+        auto lightPos = glm::vec3(0.0f ,0.0f, 10.0f);
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform3fv(glGetUniformLocation(shader.ID, "lightColor"), 1, glm::value_ptr(lightColor));
+        glUniform3fv(glGetUniformLocation(shader.ID, "lightPos"), 1, glm::value_ptr(lightPos));
 
         glBindVertexArray(VAO);
         for (int i=0; i < 3; i++) {
@@ -129,9 +152,8 @@ int main() {
             model = glm::translate(model, positions[i]);
 
             glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
-            glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0); 
         }
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
         // ---------------------------------------------------------------
 
         glfwPollEvents();
