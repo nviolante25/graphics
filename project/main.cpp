@@ -56,21 +56,46 @@ int main() {
     // Load data in GPU buffer
     // --------------------------------------------------------------------
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
-        0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,
+        0, 0, 0,         0.5f, 0.5f, 0.0f,
+        0, 1, 0,         0.5f, 0.5f, 0.0f,
+        1, 0, 0,         0.5f, 0.5f, 0.0f,
+        1, 1, 0,         0.5f, 0.5f, 0.0f,
+        0.5, 0.5, 1,     0.5f, 0.5f, 0.0f,
     }; 
+    unsigned int indices[] = {
+        0, 1, 2,
+        1, 2, 3,
+        0, 1, 4,
+        0, 2, 4,
+        3, 1, 4,
+        3, 2, 4,
+    };
+    glm::vec3 positions[] = {
+        glm::vec3{-2.5 ,0, 0},
+        glm::vec3{-0.5, 0, 0},
+        glm::vec3{0.75, 0, 0},
+    };
+    glm::vec3 sizes[] = {
+        glm::vec3{1, 1, 1},
+        glm::vec3{1.5, 1.5, 1.5},
+        glm::vec3{2, 2, 2}
+    };
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, EBO;
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     // Load vertex data on GPU
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-    glGenVertexArrays(1, &VAO);
+
+    // Load indices
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
 
     // Specify vertex attributes (size, type, stride, offsets)
-    glBindVertexArray(VAO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
@@ -81,25 +106,32 @@ int main() {
     // --------------------------------------------------------------------
     Shader shader("./shader/vertex.glsl", "./shader/fragment.glsl");
     
-    model = glm::rotate(model, -55.0f, glm::vec3(1, 0, 0));
     projection = glm::perspective(45.0f, 700.0f / 500.0f, 0.1f, 100.0f);
 
     // --------------------------------------------------------------------
     // Render loop
     // --------------------------------------------------------------------
+    glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.3, 0.3, 0.3, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // ---------------------------------------------------------------
         shader.use();
         view = glm::lookAt(eye, center, up);
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        for (int i=0; i < 3; i++) {
+            model = glm::mat4(1.0f);
+            model = glm::scale(model, sizes[i]);
+            model = glm::translate(model, positions[i]);
+
+            glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+            glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
+        }
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
         // ---------------------------------------------------------------
 
         glfwPollEvents();
